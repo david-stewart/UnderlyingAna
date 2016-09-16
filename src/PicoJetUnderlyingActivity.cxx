@@ -194,7 +194,12 @@ int main ( int argc, const char** argv ) {
 
 	// Set up some convenient default
 	// ------------------------------
-	const char *defaults[] = {"PicoJetUnderlyingActivity","/home/hep/caines/ly247/Scratch/pp200Y12_jetunderlying/FullJet_TransCharged_MatchTrig_ppJP2.root","ppJP2","/home/hep/caines/ly247/Scratch/pp12JP2Pico_151018/*.root", "0", "0" };
+	const char *defaults[] = {"PicoJetUnderlyingActivity",
+        "./out.root",
+        //"/home/hep/caines/ly247/Scratch/pp200Y12_jetunderlying/FullJet_TransCharged_MatchTrig_ppJP2.root",
+        "ppJP2",
+        "/home/hep/caines/ly247/Scratch/pp12JP2Pico_151018/*.root",
+        "0", "0" };
 	// {Code name, to be discard but needed since argv will use command name as the [0], output file name, triggername, intput file list, for variable IntTowScale to scale tower as systematics study, which effiencey file to use }
 	//
 	// output file name can include(optional): 
