@@ -8,7 +8,7 @@ INCFLAGS      += -I./include
 
 ifeq ($(os),Linux)
 #ly CXXFLAGS      = 
-CXXFLAGS      = -fPIC #ly	get complaint from complier and add it 
+CXXFLAGS      = -fPIC -std=c++11 #ly	get complaint from complier and add it 
 else
 #CXXFLAGS      = -O -fPIC -pipe -Wall -Wno-deprecated-writable-strings -Wno-unused-variable -Wno-unused-private-field -Wno-gnu-static-float-init
 ## for debugging:

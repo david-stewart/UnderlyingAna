@@ -18,6 +18,8 @@
 #include "UnderlyingAna.hh"
 #include "AjParameters.hh"
 
+#include "inout.h"
+
 #include <TH1.h>
 #include <TH2.h>
 #include <TH3.h>
@@ -194,12 +196,13 @@ int main ( int argc, const char** argv ) {
 
 	// Set up some convenient default
 	// ------------------------------
-	const char *defaults[] = {"PicoJetUnderlyingActivity",
+	const char *defaults[] = {"user.i", "PicoJetUnderlyingActivity",
         "./out.root",
         //"/home/hep/caines/ly247/Scratch/pp200Y12_jetunderlying/FullJet_TransCharged_MatchTrig_ppJP2.root",
         "ppJP2",
         "/home/hep/caines/ly247/Scratch/pp12JP2Pico_151018/*.root",
         "0", "0" };
+
 	// {Code name, to be discard but needed since argv will use command name as the [0], output file name, triggername, intput file list, for variable IntTowScale to scale tower as systematics study, which effiencey file to use }
 	//
 	// output file name can include(optional): 
@@ -210,12 +213,14 @@ int main ( int argc, const char** argv ) {
 	// 	"MatchTrig" together with "ppJP2" will match leading jet with the trigger jet phi, eta
 	// 	"Monojet" (default) OR "Dijet"
 	//	"TranPhi60" (default) OR "TranPhi30"
-	
 
+    TString tstr;
 	if ( argc==1 ) {
 		argv=defaults;
 		argc=sizeof (defaults ) / sizeof (defaults[0] );
-	}
+        tstr = "user.i";
+	} else { tstr = argv[1]; }
+    TextFileInputs user  = read_user_input_textfile(tstr.Data());
 
 	// Throw arguments in a vector
 	// ---------------------------
@@ -224,7 +229,7 @@ int main ( int argc, const char** argv ) {
 	// Load and set up tree
 	// --------------------
 	TString ChainName  = "JetTree";
-	TString OutFileName = arguments.at(0);
+	TString OutFileName = arguments.at(1);
 
 	// jet resolution parameter
 	// ------------------------
@@ -246,8 +251,8 @@ int main ( int argc, const char** argv ) {
 	cout << "Triggering with R=" << R << endl;
 	cout << " ################################################### " << endl;
 
-	cout<<"TriggerName: "<<arguments.at(1)<<endl;
-	TString TriggerName = arguments.at(1);
+	cout<<"TriggerName: "<<arguments.at(2)<<endl;
+	TString TriggerName = arguments.at(2);
 
 	int TrigFlagId = 0;
 	if(TriggerName.EqualTo("ppJP2")) TrigFlagId = 1236;		//// JP2               HERE NEED TO IMPROVE, NOW IT IS PUT IN BY HAND
@@ -255,21 +260,21 @@ int main ( int argc, const char** argv ) {
 	if(TriggerName.EqualTo("ppJP0")) TrigFlagId = 1220;		//// JP0               HERE NEED TO IMPROVE, NOW IT IS PUT IN BY HAND
 
 
-	cout<<"Chain data: "<<arguments.at(2).data()<<" for "<<ChainName<<endl;
+	cout<<"Chain data: "<<arguments.at(3).data()<<" for "<<ChainName<<endl;
 	TChain* chain = new TChain( ChainName );
-	chain->Add( arguments.at(2).data() );
+	chain->Add( arguments.at(3).data() );
 
 	// Au+Au?
 	// ------
 	bool isAuAu=false;
-	if (arguments.at(2).find("AuAu") != std::string::npos ) isAuAu=true; // Quick and dirty...
-	if (arguments.at(2).find("auau") != std::string::npos ) isAuAu=true; // Quick and dirty...
+	if (arguments.at(3).find("AuAu") != std::string::npos ) isAuAu=true; // Quick and dirty...
+	if (arguments.at(3).find("auau") != std::string::npos ) isAuAu=true; // Quick and dirty...
 
 	// for systematics
 	// ---------------
-	Int_t IntTowScale=atoi( arguments.at(3).data() ); // +/- 2%
+	Int_t IntTowScale=atoi( arguments.at(4).data() ); // +/- 2%
 	Float_t fTowScale = 1.0 + IntTowScale*0.02;
-	Int_t mEffUn=atoi( arguments.at(4).data() ) ;
+	Int_t mEffUn=atoi( arguments.at(5).data() ) ;
 
 	switch ( mEffUn ){
 		case 0 :
