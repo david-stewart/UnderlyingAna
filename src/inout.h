@@ -9,8 +9,8 @@
  *(b) It reads the input file into the object "user", at which point
  *    all input file parameters are available as "user.value".
  *
- *(c) Generates the output directory <user.outdir> (the user input files must
- *    contain the keyword outdir).
+ *(c) Generates the output directory <user.odir> (the user input files must
+ *    contain the keyword odir).
  *
  *(d) Echoes <input_file> and <input_file>.echo to the output directory.
 */
@@ -22,7 +22,7 @@
 #include "InputReader_c.h"
 #include <TString.h>
 
-TextFileInputs read_user_input_textfile(const char* fin){
+TextFileInputs read_user_input_textfile(const char* fin, const TString& alt_odir){
     TString fin_name = fin;
     struct stat fstat;
     struct stat fstat2;
@@ -88,7 +88,7 @@ TextFileInputs read_user_input_textfile(const char* fin){
 
  /* (c) */
     // if output directory doesn't exist, make it
-    const char* odir = user.outdir.data();
+    const char* odir = alt_odir == "" ? user.odir.Data() : alt_odir.Data();
     if (stat(odir, &fstat) == -1) {
         mkdir (odir, 0700);
     } else if (fstat.st_mode & S_IFREG) {
@@ -101,8 +101,8 @@ TextFileInputs read_user_input_textfile(const char* fin){
     // copy both the input file, and the input file echo, to the output directory
     TString tstr1;
     TString tstr2;
-    tstr1.Form("%s.echo",fin_name.Data());
-    tstr2.Form("%s/%s.echo",odir,fin_name.Data());
+    tstr1.Form("%s.initial",fin_name.Data());
+    tstr2.Form("%s/%s.initial",odir,fin_name.Data());
 
     stat(tstr1.Data(),&fstat);
     stat(tstr2.Data(),&fstat2);
@@ -124,5 +124,5 @@ TextFileInputs read_user_input_textfile(const char* fin){
     return user;
 
   //end of stated goals
-    //std::cout << user.outdir.data() << std::endl;
+    //std::cout << user.odir.data() << std::endl;
 }

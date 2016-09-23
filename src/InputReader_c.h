@@ -132,11 +132,11 @@ const long long InputReader::read_llint (const char* var_name){
     return rval;
 }
 
-const std::string InputReader::read_string (const char* var_name){
+const TString InputReader::read_string (const char* var_name){
     char new_temp[MAX_SIZE];
     read(new_temp, var_name,"s");
 
-    std::string rval = new_temp;
+    TString rval = new_temp;
     return rval;
 }
 std::pair<float, float> InputReader::read_pair_of_floats(const char* var_name){
@@ -155,222 +155,81 @@ TextFileInputs::TextFileInputs(InputReader &din){
     //------------------------------------
     //  First inputs (frequently changed)
     //------------------------------------
-    outdir               = din.read_string("outdir");
-    nEvents              = din.read_llint("nEvents");
-    save_every_nEvents   = din.read_int("save_every_nEvents");
-    output_dirname       = din.read_string("output_dirname");
-    add_detail_dirname   = din.read_bool("add_detail_dirname");
-    sparse_degphi_tranlo = din.read_float("sparse_degphi_tranlo");
-    sparse_degphi_tranhi = din.read_float("sparse_degphi_tranhi");
-    tran_max_by_n        = din.read_bool("tran_max_by_n");
-    no_pdfs              = din.read_bool("no_pdfs");
+    odir                 = din.read_string("odir");
+    InputFiles           = din.read_string("InputFiles");
+    OutFileName          = din.read_string("OutFileName");
+    JetRes_R             = din.read_float("JetRes_R");
+    TrigFlagId           = din.read_int("TrigFlagId");
+    TriggerName          = din.read_string("TriggerName");
+    ChainName            = din.read_string("ChainName");
+    isAuAu               = din.read_bool("isAuAu");
+    IntTowScale          = din.read_int("IntTowScale");
+    fTowScale            = din.read_float("fTowScale");
+    mEffUn               = din.read_int("mEffUn");
+    JetChargeCode        = din.read_int("JetChargeCode");
+    UnderlyingChargeCode = din.read_int("UnderlyingChargeCode");
+    TrackPileUpCut       = din.read_int("TrackPileUpCut");
+    TStarJetDebugLevel   = din.read_int("TStarJetDebugLevel");
+    JetAlgorithm         = din.read_string("JetAlgorithm");
 
-    announce_every_nevents  = din.read_int("announce_every_nevents ");
-    output_rootfile         = din.read_string("output_rootfile        ");
-    input_rootfile          = din.read_string("input_rootfile         ");
-    triggername             = din.read_string("triggername            ");
-    badtower_list_loc    = din.read_string("badtower_list_loc");
-    DebugLevel              = din.read_int("DebugLevel             ");
-    file_runmsg             = din.read_string("file_runmsg            ");
+    TStarJet_DebugLevel  = din.read_int("TStarJet_DebugLevel");
+    UlaToMatchTrig       = din.read_bool("UlaToMatchTrig");
+    NeutralJetFractionCut = din.read_bool("NeutralJetFractionCut");
+    RefMultCut           = din.read_float("RefMultCut");
 
-    //------------------------------------
-    //  Main modeling parameters (w/ selector cuts)
-    //------------------------------------
-    R                    = din.read_float("R");
-    efficiency_filename  = din.read_string("efficiency_filename");
-    IntTowScale          = din.read_string("IntTowScale        ");
-    jet_algo             = din.read_string("jet_algo");
-    ghost_repeat         = din.read_int("ghost_repeat");
-    ghost_area           = din.read_double("ghost_area");
-    VzCut                = din.read_double("VzCut");
-    VzDiffCut            = din.read_double("VzDiffCut");
-    RefMultCut           = din.read_uint("RefMultCut");
-    TrackPileupCut       = din.read_int("TrackPileupCut");
-    DcaCut               = din.read_double("DcaCut              ");
-    PVRanking            = din.read_int("PVRanking           ");
-    NMinFit              = din.read_int("NMinFit             ");
-    FitOverMaxPointsCut  = din.read_double("FitOverMaxPointsCut ");
+    CstMinPt             = din.read_float("CstMinPt");
+    DiJetAngle           = din.read_int("DiJetAngle");
+    TransversePhiSize    = din.read_float("TransversePhiSize");
 
     //------------------------------------
-    //  Cuts, event and particle
+    //  Some of the Aj Parameters
     //------------------------------------
-    evCut_zdc_min        = din.read_int("evCut_zdc_min");
-    evCut_zdc_max        = din.read_int("evCut_zdc_max");
-    evCut_minjetpt       = din.read_float("evCut_minjetpt");
-    evCut_matchtrig      = din.read_bool("evCut_matchtrig");
-    evCut_neutptPercMax  = din.read_double("evCut_neutptPercMax");
-    cstCut_minpt         = din.read_float("cstCut_minpt");
-    cstCut_maxeta        = din.read_double("cstCut_maxeta");
-    cstCut_mineta        = din.read_double("cstCut_mineta");
-    cstCut_chargedonly   = din.read_bool("cstCut_chargedonly");
-
-    //------------------------------------
-    //  PDF plot generation
-    //------------------------------------
-    pdf_switch_all       = din.read_int("pdf_switch_all");
-    pdf_n_pjet           = din.read_bool("pdf_n_pjet");
-    pdf_n_pjet_parea     = din.read_bool("pdf_n_pjet_parea");
-    pdf_pt_pjet          = din.read_bool("pdf_pt_pjet");
-    pdf_pt_pjet_parea    = din.read_bool("pdf_pt_pjet_parea");
-    pdf_deta_mcarlo      = din.read_bool("pdf_deta_mcarlo");
-    pdf_deta_mcarlo_eff  = din.read_bool("pdf_deta_mcarlo_eff");
-    dmc_x1               = din.read_double("dmc_x1");
-    dmc_y1               = din.read_double("dmc_y1");
-    dmc_x2               = din.read_double("dmc_x2");
-    dmc_y2               = din.read_double("dmc_y2");
-    pdf_sparse_projs     = din.read_bool("pdf_sparse_projs");
-
-    //------------------------------------
-    //  Selections for TH1D histograms of neutron numbers in lead/sub/trans (LST) directions
-    //------------------------------------
-    LST_nbins            = din.read_int("LST_nbins");
-    LTS_xlo              = din.read_double("LTS_xlo");
-    LTS_xhi              = din.read_double("LTS_xhi");
-    master_runall        = din.read_int("master_runall");
-    master_nbins         = din.read_int("master_nbins");
-    quiet_run            = din.read_bool("quiet_run");
-
-    //------------------------------------
-    //  Histogram options
-    //------------------------------------
-    integrate2D          = din.read_bool("integrate2D");
-    setLogY_1D_axis      = din.read_bool("setLogY_1D_axis");
-    setLogY_2D_axis      = din.read_bool("setLogY_2D_axis");
-    profile_option       = din.read_string("profile_option");
-
-    //------------------------------------
-    //  Selectors for print out statements
-    //------------------------------------
-    cout_matchtrig       = din.read_bool("cout_matchtrig");
-    cout_finalstatcuts   = din.read_bool("cout_finalstatcuts");
-
-    //------------------------------------
-    //  read but not used, and rarely used
-    //------------------------------------
-    program_name          = din.read_string("program_name         ");
-
-    //------------------------------------
-    //  THnSparse Inputs
-    //------------------------------------
-    sparse_use           = din.read_bool("sparse_use");
-
-    sparse_jetpT_nbins   = din.read_int("sparse_jetpT_nbins");
-    sparse_jetpT_min     = din.read_float("sparse_jetpT_min");
-    sparse_jetpT_max     = din.read_float("sparse_jetpT_max");
-
-    sparse_jeteta_nbins  = din.read_int("sparse_jeteta_nbins");
-    sparse_jeteta_min    = din.read_float("sparse_jeteta_min");
-    sparse_jeteta_max    = din.read_float("sparse_jeteta_max");
-
-    sparse_deta_nbins    = din.read_int("sparse_deta_nbins");
-    sparse_deta_min      = din.read_float("sparse_deta_min");
-    sparse_deta_max      = din.read_float("sparse_deta_max");
-
-    sparse_pT_nbins      = din.read_int("sparse_pT_nbins");
-    sparse_pT_min        = din.read_float("sparse_pT_min");
-    sparse_pT_max        = din.read_float("sparse_pT_max");
-
-    sparse_mc_dartsPbin  = din.read_int("sparse_mc_dartsPbin");
-    sparse_mc_eta_nbins  = din.read_int("sparse_mc_eta_nbins");
-
-    n_pT_slices     = din.read_int("n_pT_slices"); // enter 0 for slices
-    for (int i = 0; i < n_pT_slices; i++){
-        char temp[10];  
-        sprintf(temp,"%i:",i+1);
-        pT_slice.push_back(din.read_pair_of_floats(temp)); 
-    }
-
-  // ************************************
-  // Do NOT cut high tracks and towers!
-  // Instead, reject the whole event when
-  // of these is found
-  // ************************************
-    MaxEtCut             = din.read_double("MaxEtCut            ");
-    MaxTrackPt           = din.read_double("MaxTrackPt          ");
-
-// EVENT rejection cuts
-    MaxEventPtCut        = din.read_double("MaxEventPtCut");
-    MaxEventEtCut        = din.read_double("MaxEventEtCut");
-
-// Hadronic Selection Values
-    ApplyFractionHadronicCorrection  = din.read_bool("ApplyFractionHadronicCorrection ");
-    FractionHadronicCorrection       = din.read_double("FractionHadronicCorrection      ");
-    RejectTowerElectrons             = din.read_bool("RejectTowerElectrons            ");
-
-  /// Repetitions in the background. Anything other than 1 WILL NOT WORK because
-  /// a) we're using explicit ghosts (though we don't have to)
-  /// b) more importantly, the background subtractor contains fastjet::SelectorNHardest(2)
-  ///    which doesn't work jet-by-jet and throws an error
-
-
-    fprintf(din.fecho,"\n\n%s\n%s\n%s\n"
-            , "-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "
-            , " * The following input names defaulted to the following final values. "
-            , "-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- ");
-
-    bool mod = false;
-    if (save_every_nEvents < 0){
-    	if (nEvents == -1) { 
-            save_every_nEvents = 10000000;
-            mod = true;
-        } else {
-            save_every_nEvents = -nEvents/(save_every_nEvents-1);
-            mod = true;
-        }
-    }
-    if (mod) { fprintf(din.fecho, "%-25s %i\n", "save_every_nEvents",save_every_nEvents); mod = false; }
-
-    if (sparse_degphi_tranhi == 0){
-        sparse_degphi_tranhi = 180. - sparse_degphi_tranlo;
-        mod = true;
-    }
-    if (mod) { fprintf(din.fecho, "%-25s %5.2f\n", "sparse_degphi_tranhi",sparse_degphi_tranhi); mod = false; }
-
-    if (input_rootfile == "MB") { 
-        input_rootfile = "/home/fas/caines/ly247/Scratch/run12ppQA/pp200Y12PicoMB_151207_P12id_sum*.root";  mod = true;}
-    else if (input_rootfile == "JP2") { 
-        input_rootfile = "/home/fas/caines/ly247/Scratch/run12ppQA/pp200Y12PicoJP2_151030_P12id_sum*.root"; 
-        mod = true;
-    }
-    if (mod) { fprintf(din.fecho, "%-25s %s\n", "input_rootfile",input_rootfile.data()); mod = false; }
-
-    if (triggername == "def") { 
-	mod = true;
-    	TString tstr = input_rootfile;
-	if (tstr.Contains("PicoMB")) { triggername = "ppMB"; }
-	else if (tstr.Contains("PicoJP2")) { triggername = "ppJP2"; }
-    }
-    if (mod) { fprintf(din.fecho, "%-25s %s\n", "triggername",triggername.data()); mod = false; }
-
-    if (add_detail_dirname) {
-        mod = true;
-        TString number;
-        if ( nEvents == -1) { number = "all"; }
-        else {
-            float num = 1.*nEvents / 1000000;
-            number = Form("%.1f",num);
-            number.ReplaceAll(".","p");
-            number.Append("M");
-        }
-
-        TString mbjp = "";
-    	TString tstr = input_rootfile;
-	if (tstr.Contains("PicoMB")) { mbjp = "MB"; }
-	else if (tstr.Contains("PicoJP2")) { mbjp = "JP"; }
-        
-        // add the degrees and number of runs to the dir-name
-        //  [name]_45sym_3p45M for 45, 135 degrees and 3.45 million,
-        //  [name]_45_130_3p45M is more for same, but non-symmetric input (i.e. 130 != 180-45)
-	if (sparse_degphi_tranhi == 180 - sparse_degphi_tranlo){
-	    output_dirname = Form("%s_%s_%.0fsym_%s",output_dirname.data(),mbjp.Data(),sparse_degphi_tranlo,
-		number.Data());
-        } else {
-	    output_dirname = Form("%s_%s_%.0f_%.0f_%s",output_dirname.data(),mbjp.Data(),
-              sparse_degphi_tranlo, sparse_degphi_tranhi,number.Data());
-        }
-    }
-    if (mod) { fprintf(din.fecho, "%-25s %s\n", "output_dirname",output_dirname.data()); mod = false; }
-
-
+    MaxTrackRap          = din.read_float("MaxTrackRap");
+    dPhiCut              = din.read_float("dPhiCut");
 }
-#endif
+
+void TextFileInputs::PrintCurrentVals( const TString &fout_name,
+                                       const int& which_write){
+    FILE *fout;
+    fout = fopen(fout_name.Data(),"w");
+    if (fout == NULL){
+        std::cout << "WARNING: Cannot open the output file " << fout_name
+                  << " to use to write out the members of 'user'.\n";
+        exit(1);
+    };
+
+    fprintf(fout,"// -- Printing: %i\n\n",which_write);
+    fprintf(fout,"// This is an echo of all of the inputs to the module \"user\"\n"
+                 "// AFTER they have been modified by internal logic, due in part\n"
+                 "// (potentially) to other command line arguments.\n\n"
+                 "// This file may be used to inspect the parameters used and also\n"
+                 "// as a way to re-run the program with the same arguments without\n"
+                 "// (without needing any other command line arguments)\n\n");
+    fprintf(fout,"//%-22s  %-20s\n","keyword","value");
+    fprintf(fout,"  %-22s  %-20s  \n","odir", odir.Data());
+    fprintf(fout,"  %-22s  %-20s  \n","InputFiles", InputFiles.Data());
+    fprintf(fout,"  %-22s  %-20s  \n","OutFileName", OutFileName.Data());
+    fprintf(fout,"  %-22s  %-20.8f\n","JetRes_R", JetRes_R);
+    fprintf(fout,"  %-22s  %-20i  \n","TrigFlagId", TrigFlagId);
+    fprintf(fout,"  %-22s  %-20s  \n","TriggerName", TriggerName.Data());
+    fprintf(fout,"  %-22s  %-20s  \n","ChainName", ChainName.Data());
+    fprintf(fout,"  %-22s  %-20i  \n","isAuAu", isAuAu);
+    fprintf(fout,"  %-22s  %-20i  \n","IntTowScale", IntTowScale);
+    fprintf(fout,"  %-22s  %-20.8f\n","fTowScale", fTowScale);
+    fprintf(fout,"  %-22s  %-20i  \n","mEffUn", mEffUn);
+    fprintf(fout,"  %-22s  %-20i  \n","JetChargeCode", JetChargeCode);
+    fprintf(fout,"  %-22s  %-20i  \n","UnderlyingChargeCode", UnderlyingChargeCode);
+    fprintf(fout,"  %-22s  %-20i  \n","TrackPileUpCut", TrackPileUpCut);
+    fprintf(fout,"  %-22s  %-20i  \n","TStarJetDebugLevel", TStarJetDebugLevel);
+    fprintf(fout,"  %-22s  %-20s  \n","JetAlgorithm", JetAlgorithm.Data());
+    fprintf(fout,"  %-22s  %-20i  \n","TStarJet_DebugLevel", TStarJet_DebugLevel);
+    fprintf(fout,"  %-22s  %-20i  \n","UlaToMatchTrig", UlaToMatchTrig);
+    fprintf(fout,"  %-22s  %-20i  \n","NeutralJetFractionCut", NeutralJetFractionCut);
+    fprintf(fout,"  %-22s  %-20.8f\n","RefMultCut", RefMultCut);
+    fprintf(fout,"  %-22s  %-20.8f\n","CstMinPt", CstMinPt);
+    fprintf(fout,"  %-22s  %-20i  \n","DiJetAngle", DiJetAngle);
+    fprintf(fout,"  %-22s  %-20.8f\n","TransversePhiSize", TransversePhiSize);
+    fprintf(fout,"  %-22s  %-20.8f\n","MaxTrackRap", MaxTrackRap);
+    fprintf(fout,"  %-22s  %-20.8f\n","dPhiCut", dPhiCut);
+}
+#endif // INPUTFILES_C

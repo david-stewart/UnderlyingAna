@@ -310,7 +310,7 @@ public:
   bool GetToMatchJetTrigger() {return mNeedToMatchTrig; }
 
   // Wether apply Neutral/Total Pt of Jet fraction cut
-  void SetNetraulJetFracCut(bool val) {mNeutralJetFracCut = val; };
+  void SetNeutralJetFracCut(bool val) {mNeutralJetFracCut = val; };
 
   // Use Dijet angle (1) or Monojet angle (0)
   void SetDiJetAngle(int val) {mUseDijetAngle = val; }
