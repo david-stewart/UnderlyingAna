@@ -297,12 +297,16 @@ TextFileInputs::TextFileInputs(InputReader &din){
 # Variable inputs
 ##############################################################################################
 words.intups("First inputs (frequently changed)", (
-    ('string' , 'odir'            , 'PictoJetEtc' , 'output directory name'),
-    ('string' , 'InputFiles'      , '../'     , 'can use globber names'),
+    ('string' , 'odir'            , 'PicoJetOut', 'output directory name'),
+    ('string' , 'InputFiles'      , 
+        '/home/fas/caines/ly247/scratch/run12ppQA/pp200Y12PicoJP*.root'
+                                  , 'can use globber names'),
     ('string' , 'OutFileName'     , 'PicoJetUnderlyingActivity', ''),
-    ('float'  , 'JetRes_R'        , '0.'      , ''),
+    ('int'    , 'nEvents'         , '-1'      , 'if -1, will select all events'),
+    ('float'  , 'JetRes_R'        , '0.6'      , ''),
     ('int'    , 'TrigFlagId'      , '0'       , ''),
-    ('string' , 'TriggerName'     , 'ppJP2'   , ''),
+    ('int'    , 'TrigId'          , '0'       , ''),
+    ('string' , 'TriggerName'     , 'ppJP2'   , 'ppMB,ppJP0/1/2'),
     ('string' , 'ChainName'       , 'JetTree' , ''),
     ('bool'   , 'isAuAu'          , '0'       , ''),
     ('int'    , 'IntTowScale'     , '0'       , ''),
@@ -314,7 +318,7 @@ words.intups("First inputs (frequently changed)", (
                            '2=tof match only, 3=tpc track matching to bemc',
                            '<odir-built>: NoTofMatch=0, BemcOrTofMatch=1, default = 2, BemcMatch=3'),
     ('int'    , 'TStarJetDebugLevel'   , '0'  , ''),
-    ('string' , 'JetAlgorithm'         , '0'  , 'kt or antikt'),
+    ('string' , 'JetAlgorithm'         , 'antikt'  , 'kt or antikt'),
     False,
     ('int'    , 'TStarJet_DebugLevel'  , '0'  , ''),
     ('bool'   , 'UlaToMatchTrig'       , '0'  , ''),
@@ -324,6 +328,9 @@ words.intups("First inputs (frequently changed)", (
     ('float'  , 'CstMinPt'             , '0.' , ''),
     ('int'    , 'DiJetAngle'           , '1'  , '0 or 1'),
     ('float'  , 'TransversePhiSize'    , '60.', ''),
+    ('string' , 'badrun_list'          , './include/pp200Y12_badrun.list',
+                                        'file listing badruns'),
+    ('bool'   , 'noprint_badrunid'     , '1'  , ''),
 ))
 words.intups("Some of the Aj Parameters", (
     ('float'  , 'MaxTrackRap'          , '1.0', ''),

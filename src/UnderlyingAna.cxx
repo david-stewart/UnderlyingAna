@@ -397,9 +397,11 @@ int UnderlyingAna::AnalyzeAndFill ( const std::vector<fastjet::PseudoJet>& parti
 	fastjet::Selector selector_bkgd = fastjet::SelectorAbsRapMax( max_rap ) * (!fastjet::SelectorNHardest(2));	//selector for fastjet::JetMedianBackgroundEstimator: the selection criterion is typically a geometrical one (e.g. all jets with |y|<2) sometimes supplemented with some kinematical restriction (e.g. exclusion of the two hardest jets). It is passed to the class through a Selector.
 	// selector_bkgd=fastjet::SelectorAbsRapMax( max_rap );
 
+
 	// find jets
 	// -----------------------------
 	// NO background subtraction
+
 	pJA = new JetAnalyzer( Jconstituents, jet_def, area_def);		// still need area def
 	JetAnalyzer& JA = *pJA;
 	JAResult = fastjet::sorted_by_pt( NoGhosts( sjet ( JA.inclusive_jets() ) ) ); // NO background subtraction, with jet eta requirement

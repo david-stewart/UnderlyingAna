@@ -60,8 +60,10 @@ struct TextFileInputs
     TString       odir;
     TString       InputFiles;
     TString       OutFileName;
+    int            nEvents;
     float          JetRes_R;
     int            TrigFlagId;
+    int            TrigId;
     TString       TriggerName;
     TString       ChainName;
     bool           isAuAu;
@@ -82,6 +84,8 @@ struct TextFileInputs
     float          CstMinPt;
     int            DiJetAngle;
     float          TransversePhiSize;
+    TString       badrun_list;
+    bool           noprint_badrunid;
 
     //------------------------------------
     //  Some of the Aj Parameters

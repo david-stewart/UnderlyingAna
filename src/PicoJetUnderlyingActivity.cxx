@@ -106,9 +106,13 @@ float CorrectBemcVzEta(float geoEta, float PrimVertexZ, float radius = 224){
 
 }
 
-bool readinbadrunlist(std::set<int> & badrun, TString csvfile="./include/pp200Y12_badrun.list") {
+bool readinbadrunlist(std::set<int> & badrun, TextFileInputs & user)
+{
+               // TString csvfile="./include/pp200Y12_badrun.list", 
+               // TextFileInputs &user) {
 	
 	// open infile
+    TString csvfile = user.badrun_list.Data();
 	std::string line;
 	std::ifstream inFile (csvfile );
 	
@@ -119,6 +123,7 @@ bool readinbadrunlist(std::set<int> & badrun, TString csvfile="./include/pp200Y1
 	  return false;
 	}
 	
+	bool print_badrun_msg = true;
 	while (std::getline (inFile, line) ){
 	  if ( line.size()==0 ) continue; // skip empty lines
 	  if ( line[0] == '#' ) continue; // skip comments
@@ -130,7 +135,15 @@ bool readinbadrunlist(std::set<int> & badrun, TString csvfile="./include/pp200Y1
 	    int ientry = atoi(entry.c_str());
 	    if (ientry) {
 	      badrun.insert( ientry );
-	      std::cout<<"Added bad runid "<<ientry<<std::endl;
+		  if (user.noprint_badrunid) {
+             if (print_badrun_msg) {
+                std::cout<<"Adding badruns. Skipping badrun msgs." << endl;
+                cout<<"  (To print badrun values, change 'noprint_badrunid' in user.i to '0'.)"<<endl;
+                print_badrun_msg = false;
+             }   
+          } else {
+              std::cout<<"Added bad runid "<<ientry<<std::endl;
+          }
 	    }
 	  }
 	}
@@ -161,8 +174,6 @@ TStarJetPicoReader SetupReader ( TChain* chain, TString TriggerString, const dou
 	evCuts->SetPVRankingCut ( 0 );		
     // Vertex ranking > 0. Use SetPVRankingCutOff() to turn off vertex ranking cut.  default is OFF
 
-
-
 	std::cout << "Exclude event with track > " << evCuts->GetMaxEventPtCut() << std::endl;
 	std::cout << "Exclude event with tower > " << evCuts->GetMaxEventEtCut() << std::endl;
 
@@ -188,8 +199,8 @@ TStarJetPicoReader SetupReader ( TChain* chain, TString TriggerString, const dou
 	// Tower energy correction (subtract associated charged particle deposit energy). 
     // By default, it is MIP correction (comment out the following 3 lines)
 	reader.SetApplyFractionHadronicCorrection(kTRUE); /*19SEP var*/
-	reader.SetFractionHadronicCorrection(0.9999); /*19SEP var*/
-	reader.SetRejectTowerElectrons( kFALSE ); /*19SEP var*/
+	reader.SetFractionHadronicCorrection(0.9999);     /*19SEP var*/
+	reader.SetRejectTowerElectrons( kFALSE );         /*19SEP var*/
 
 
 	std::cout << "Using these tower cuts:" << std::endl;
@@ -388,7 +399,7 @@ int main ( int argc, const char** argv ) {
 	//open the output files
 	cout << "Chain data: "<< user.InputFiles << " for "<< user.ChainName << endl;
 	TChain* chain = new TChain( user.ChainName.Data() );
-	chain->Add( user.ChainName.Data() );
+	chain->Add( user.InputFiles.Data() ); 
 
 	// for systematics
 	// ---------------
@@ -443,12 +454,13 @@ int main ( int argc, const char** argv ) {
 	/* 	jetalgorithm = "kt"; */
 	/* } */
 
+    TString ofil = Form("%s/%s",user.odir.Data(), user.OutFileName.Data());
 	UnderlyingAna *ula = new UnderlyingAna( 
             user.JetRes_R,
 			user.MaxTrackRap,
 			user.CstMinPt,			// pt min for const.
             user.dPhiCut,
-			user.OutFileName,
+			ofil, //user.OutFileName,
 			(string) user.JetAlgorithm
 	);  
 
@@ -480,11 +492,13 @@ int main ( int argc, const char** argv ) {
 
 	std::vector<EtaPhiPair> TrigLoc2Match;		// trigger of High Tower or Jet Patch
 
-
-	Long64_t nEvents=-1; // -1 for all
+	//Long64_t nEvents=-1; // -1 for all
 	//nEvents=10000;	// test
 	cout<<"init..."<<endl;
-	reader.Init(nEvents);
+	// DJS: make nEvents an int input
+	//reader.Init(nEvents);
+	reader.Init(user.nEvents);
+    cout<<"initializing " << user.nEvents << " " << user.nEvents << " events. " << endl;
 	int count = 0;
 
 
@@ -522,7 +536,7 @@ int main ( int argc, const char** argv ) {
 	std::set<int>badrun;
 	badrun.clear();
 
-	readinbadrunlist(badrun);        
+	readinbadrunlist(badrun, user);        
 
 
 	try{
@@ -530,6 +544,10 @@ int main ( int argc, const char** argv ) {
 			reader.PrintStatus(10);
 			if(count%10000==0) cout<<"event "<<count<<endl;
 			count++;
+
+            // DJS: Need an option to (1) cut out the run after hitting a maximum number of events
+            //                        (2) to save the output periodically
+            //           GetNOfCurrentEvents example in src/PicoUnderMcVsEmbed.cxx
 
 			// event info
 			// ----------
@@ -547,14 +565,13 @@ int main ( int argc, const char** argv ) {
                 	//}
 			//if(header->GetZdcCoincidenceRate()>6000) continue;		// test
 	
-
-
 			// Load event ht/jetpatch trigger objs
 			// ----------
 			//std::cout<<"load trigger objs"<<endl;	
 			TrigLoc2Match.clear();
 			if(ula->GetToMatchJetTrigger()) {
 				TClonesArray *trigobj = reader.GetEvent()->GetTrigObjs();
+				cout << "B2 : trigobj->GetEntries() " << trigobj->GetEntries() << endl;
 				for(int itrg = 0; itrg<trigobj->GetEntries(); itrg++) {
 					if( ((TStarJetPicoTriggerInfo *)((*trigobj)[itrg]))->GetTriggerFlag()==user.TrigFlagId )	 
                     { 
@@ -562,6 +579,8 @@ int main ( int argc, const char** argv ) {
                                         ((*trigobj)[itrg]))->GetEta(),header->GetPrimaryVertexZ()),
                                         ((TStarJetPicoTriggerInfo *)((*trigobj)[itrg]))->GetPhi()) ;
 						TrigLoc2Match.push_back(itrigloc);
+			/*TEMP*/ cout << "itrigloc " /* itrigloc */ << endl;
+			/*TEMP*/ cout << "itrigloc " << itrigloc.first << " " << itrigloc.second  << endl;
 					}
 				}
 			}

@@ -158,8 +158,10 @@ TextFileInputs::TextFileInputs(InputReader &din){
     odir                 = din.read_string("odir");
     InputFiles           = din.read_string("InputFiles");
     OutFileName          = din.read_string("OutFileName");
+    nEvents              = din.read_int("nEvents");
     JetRes_R             = din.read_float("JetRes_R");
     TrigFlagId           = din.read_int("TrigFlagId");
+    TrigId               = din.read_int("TrigId");
     TriggerName          = din.read_string("TriggerName");
     ChainName            = din.read_string("ChainName");
     isAuAu               = din.read_bool("isAuAu");
@@ -180,6 +182,8 @@ TextFileInputs::TextFileInputs(InputReader &din){
     CstMinPt             = din.read_float("CstMinPt");
     DiJetAngle           = din.read_int("DiJetAngle");
     TransversePhiSize    = din.read_float("TransversePhiSize");
+    badrun_list          = din.read_string("badrun_list");
+    noprint_badrunid     = din.read_bool("noprint_badrunid");
 
     //------------------------------------
     //  Some of the Aj Parameters
@@ -209,8 +213,10 @@ void TextFileInputs::PrintCurrentVals( const TString &fout_name,
     fprintf(fout,"  %-22s  %-20s  \n","odir", odir.Data());
     fprintf(fout,"  %-22s  %-20s  \n","InputFiles", InputFiles.Data());
     fprintf(fout,"  %-22s  %-20s  \n","OutFileName", OutFileName.Data());
+    fprintf(fout,"  %-22s  %-20i  \n","nEvents", nEvents);
     fprintf(fout,"  %-22s  %-20.8f\n","JetRes_R", JetRes_R);
     fprintf(fout,"  %-22s  %-20i  \n","TrigFlagId", TrigFlagId);
+    fprintf(fout,"  %-22s  %-20i  \n","TrigId", TrigId);
     fprintf(fout,"  %-22s  %-20s  \n","TriggerName", TriggerName.Data());
     fprintf(fout,"  %-22s  %-20s  \n","ChainName", ChainName.Data());
     fprintf(fout,"  %-22s  %-20i  \n","isAuAu", isAuAu);
@@ -229,6 +235,8 @@ void TextFileInputs::PrintCurrentVals( const TString &fout_name,
     fprintf(fout,"  %-22s  %-20.8f\n","CstMinPt", CstMinPt);
     fprintf(fout,"  %-22s  %-20i  \n","DiJetAngle", DiJetAngle);
     fprintf(fout,"  %-22s  %-20.8f\n","TransversePhiSize", TransversePhiSize);
+    fprintf(fout,"  %-22s  %-20s  \n","badrun_list", badrun_list.Data());
+    fprintf(fout,"  %-22s  %-20i  \n","noprint_badrunid", noprint_badrunid);
     fprintf(fout,"  %-22s  %-20.8f\n","MaxTrackRap", MaxTrackRap);
     fprintf(fout,"  %-22s  %-20.8f\n","dPhiCut", dPhiCut);
 }
