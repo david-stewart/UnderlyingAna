@@ -92,5 +92,37 @@ struct TextFileInputs
     //------------------------------------
     float          MaxTrackRap;
     float          dPhiCut;
+
+    //------------------------------------
+    //  AjParameters.hh input values
+    //------------------------------------
+    int             ghost_repeat;
+    double         ghost_area;
+
+    double         jet_ptmin;
+    double         jet_ptmax;
+
+    double         JetNeutralPertMax;
+
+    double         LeadPtMin;
+    double         SubLeadPtMin;
+
+    double         PtConsHi;
+
+    double         VzCut;
+    double         VzDiffCut;
+
+    double         DcaCut;
+    int            NMinFit;
+    double         FitOverMaxPointsCut;
+
+    double         MaxEtCut;
+    double         MaxTrackPt;
+
+    //------------------------------------
+    //  EVENT rejection cuts
+    //------------------------------------
+    double         MaxEventPtCut;
+    double         MaxEventEtCut;
 };
 #endif // INPUTFILES_H

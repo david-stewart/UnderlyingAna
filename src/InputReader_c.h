@@ -190,6 +190,38 @@ TextFileInputs::TextFileInputs(InputReader &din){
     //------------------------------------
     MaxTrackRap          = din.read_float("MaxTrackRap");
     dPhiCut              = din.read_float("dPhiCut");
+
+    //------------------------------------
+    //  AjParameters.hh input values
+    //------------------------------------
+     ghost_repeat        = din.read_int(" ghost_repeat");
+    ghost_area           = din.read_double("ghost_area");
+
+    jet_ptmin            = din.read_double("jet_ptmin");
+    jet_ptmax            = din.read_double("jet_ptmax");
+
+    JetNeutralPertMax    = din.read_double("JetNeutralPertMax");
+
+    LeadPtMin            = din.read_double("LeadPtMin");
+    SubLeadPtMin         = din.read_double("SubLeadPtMin");
+
+    PtConsHi             = din.read_double("PtConsHi");
+
+    VzCut                = din.read_double("VzCut");
+    VzDiffCut            = din.read_double("VzDiffCut");
+
+    DcaCut               = din.read_double("DcaCut");
+    NMinFit              = din.read_int("NMinFit");
+    FitOverMaxPointsCut  = din.read_double("FitOverMaxPointsCut");
+
+    MaxEtCut             = din.read_double("MaxEtCut");
+    MaxTrackPt           = din.read_double("MaxTrackPt");
+
+    //------------------------------------
+    //  EVENT rejection cuts
+    //------------------------------------
+    MaxEventPtCut        = din.read_double("MaxEventPtCut");
+    MaxEventEtCut        = din.read_double("MaxEventEtCut");
 }
 
 void TextFileInputs::PrintCurrentVals( const TString &fout_name,
@@ -239,5 +271,22 @@ void TextFileInputs::PrintCurrentVals( const TString &fout_name,
     fprintf(fout,"  %-22s  %-20i  \n","noprint_badrunid", noprint_badrunid);
     fprintf(fout,"  %-22s  %-20.8f\n","MaxTrackRap", MaxTrackRap);
     fprintf(fout,"  %-22s  %-20.8f\n","dPhiCut", dPhiCut);
+    fprintf(fout,"  %-22s  %-20i  \n"," ghost_repeat",  ghost_repeat);
+    fprintf(fout,"  %-22s  %-20.8f\n","ghost_area", ghost_area);
+    fprintf(fout,"  %-22s  %-20.8f\n","jet_ptmin", jet_ptmin);
+    fprintf(fout,"  %-22s  %-20.8f\n","jet_ptmax", jet_ptmax);
+    fprintf(fout,"  %-22s  %-20.8f\n","JetNeutralPertMax", JetNeutralPertMax);
+    fprintf(fout,"  %-22s  %-20.8f\n","LeadPtMin", LeadPtMin);
+    fprintf(fout,"  %-22s  %-20.8f\n","SubLeadPtMin", SubLeadPtMin);
+    fprintf(fout,"  %-22s  %-20.8f\n","PtConsHi", PtConsHi);
+    fprintf(fout,"  %-22s  %-20.8f\n","VzCut", VzCut);
+    fprintf(fout,"  %-22s  %-20.8f\n","VzDiffCut", VzDiffCut);
+    fprintf(fout,"  %-22s  %-20.8f\n","DcaCut", DcaCut);
+    fprintf(fout,"  %-22s  %-20i  \n","NMinFit", NMinFit);
+    fprintf(fout,"  %-22s  %-20.8f\n","FitOverMaxPointsCut", FitOverMaxPointsCut);
+    fprintf(fout,"  %-22s  %-20.8f\n","MaxEtCut", MaxEtCut);
+    fprintf(fout,"  %-22s  %-20.8f\n","MaxTrackPt", MaxTrackPt);
+    fprintf(fout,"  %-22s  %-20.8f\n","MaxEventPtCut", MaxEventPtCut);
+    fprintf(fout,"  %-22s  %-20.8f\n","MaxEventEtCut", MaxEventEtCut);
 }
 #endif // INPUTFILES_C

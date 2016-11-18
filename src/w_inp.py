@@ -301,7 +301,7 @@ words.intups("First inputs (frequently changed)", (
     ('string' , 'InputFiles'      , 
         '/home/fas/caines/ly247/scratch/run12ppQA/pp200Y12PicoJP*.root'
                                   , 'can use globber names'),
-    ('string' , 'OutFileName'     , 'PicoJetUnderlyingActivity', ''),
+    ('string' , 'OutFileName'     , 'picojetout.root', ''),
     ('int'    , 'nEvents'         , '-1'      , 'if -1, will select all events'),
     ('float'  , 'JetRes_R'        , '0.6'      , ''),
     ('int'    , 'TrigFlagId'      , '0'       , ''),
@@ -336,6 +336,49 @@ words.intups("Some of the Aj Parameters", (
     ('float'  , 'MaxTrackRap'          , '1.0', ''),
     ('float'  , 'dPhiCut'              , '0.4', ''),
 ))
+words.intups("AjParameters.hh input values",(
+  ('int'    , ' ghost_repeat',   1, ''),
+  ('double', 'ghost_area',    0.01,  ''), #    ///< ghost area
+  False,
+  ('double', 'jet_ptmin',    10.0,  ''), #     ///< Min jet pT
+  ('double', 'jet_ptmax',    1000.0,  ''), #   ///< Max jet pT
+  False,
+  ('double',  'JetNeutralPertMax',  0.9, ''), #;		// Neutral/Total Pt of the Jet < 90%
+  False,
+  ('double',  'LeadPtMin',  20.0, ''), #;      ///< Min leading jet pT 
+  ('double',  'SubLeadPtMin',  10.0, ''), #;   ///< Min sub-leading jet pT 
+  False,
+  ('double',  'PtConsHi',2.0, ''), #;        ///< High constituent pT cut (low cut is specified in wrapper)
+  False,
+  ('double',  'VzCut',30, ''), #;            ///< Vertex z 
+  ('double',  'VzDiffCut',5, ''), #;         ///< |Vz(TPC) - Vz(VPD)| <-- NOT WORKING in older data (no VPD)
+  #//const double VzDiffCut=1000;      ///< |Vz(TPC) - Vz(VPD)|
+  False,
+  ('double',  'DcaCut',1.0, ''), #;          ///< track dca
+  ('int',  'NMinFit',20, ''), #;             ///< minimum number of fit points for tracks
+  ('double',  'FitOverMaxPointsCut',0.52, ''), #; ///< NFit / NFitPossible
+  False,
+  #// ************************************
+  #// Do NOT cut high tracks and towers!
+  #// Instead, reject the whole event when
+  #// of these is found
+  #// ************************************
+  ('double',  'MaxEtCut',1000, ''), #;       ///< tower ET cut
+  ('double',  'MaxTrackPt',1000, ''), #;     ///< track pT cut
+))
+words.intups('EVENT rejection cuts',(
+  ('double',  'MaxEventPtCut', 20, ''), #;       ///< track pT cut for event
+  ('double',  'MaxEventEtCut', 50, ''), # ///< tower ET cut for event
+))
+#	TStarJetPicoReader reader = SetupReader( chain, user.TriggerName, user.RefMultCut, user );
+#words.intups('TO REPRODUCE JOERN:'),(
+  #// const double VzCut=30;
+  #// const double AuAuRefMultCut=351; // not used
+  #// const double DcaCut=1.0;
+  #// const int NMinFit=20;
+  #// const double FitOverMaxPointsCut=0.52;
+  #// // NO VzDiffCut
+  #// // NO MaxTrackPt or MaxEtCut
 
 #  //some of the Aj Parameters
 #    ('string'  , 'outdir'                , 'outdir' ),

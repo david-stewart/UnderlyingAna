@@ -22,7 +22,7 @@
   */
 
 #include "UnderlyingAna.hh"
-#include "AjParameters.hh"
+// #include "AjParameters.hh"
 
 #include "inout.h"
 
@@ -152,9 +152,13 @@ bool readinbadrunlist(std::set<int> & badrun, TextFileInputs & user)
 
 
 
-// Helper to deal with repetitive stuff
-TStarJetPicoReader SetupReader ( TChain* chain, TString TriggerString, const double RefMultCut ){
-	//TStarJetPicoDefinitions::SetDebugLevel(10); // 10 for more output, 0 for less output
+//-----------------------------
+//  Reader for Event Cuts
+//-----------------------------
+TStarJetPicoReader SetupReader ( TChain* chain, TextFileInputs &user) {
+    //TString TriggerName, double RefMultCut){ //TextFileInputs& user ){
+    //TChain* chain, TString TriggerString, const double RefMultCut ){
+	//TStarJetPicoDefinitions::SetDebugLevel(10); // 10 for more  output, 0 for less output
 
 	TStarJetPicoReader reader;
 	reader.SetInputChain (chain);
@@ -162,14 +166,18 @@ TStarJetPicoReader SetupReader ( TChain* chain, TString TriggerString, const dou
 	// Event and track selection
 	// -------------------------
 	TStarJetPicoEventCuts* evCuts = reader.GetEventCuts();
-	evCuts->SetTriggerSelection( TriggerString ); //All, MB, HT, pp, ppHT, ppJP
-	// Additional cuts 
-	evCuts->SetVertexZCut (AjParameters::VzCut); /*19SEP var*/
-	evCuts->SetRefMultCut ( RefMultCut ); /*19SEP var*/
-	evCuts->SetVertexZDiffCut( AjParameters::VzDiffCut ); /*19SEP var*/
+    
+    // Note, the trigger selection logic is in TStarJetPicoEventcuts.cxx
+    // main selections here are ppMB, ppJP0, ppJP1, ppJP2
+	evCuts->SetTriggerSelection( user.TriggerName ); //All, MB, HT, pp, ppHT, ppJP
 
-	evCuts->SetMaxEventPtCut ( AjParameters::MaxEventPtCut ); /*19SEP var*/
-	evCuts->SetMaxEventEtCut ( AjParameters::MaxEventEtCut ); /*19SEP var*/
+	// Additional cuts 
+	evCuts->SetVertexZCut (user.VzCut); /*19SEP var*/
+	evCuts->SetRefMultCut ( user.RefMultCut ); /*19SEP var*/
+	evCuts->SetVertexZDiffCut( user.VzDiffCut ); /*19SEP var*/
+
+	evCuts->SetMaxEventPtCut ( user.MaxEventPtCut ); /*19SEP var*/
+	evCuts->SetMaxEventEtCut ( user.MaxEventEtCut ); /*19SEP var*/
 
 	evCuts->SetPVRankingCut ( 0 );		
     // Vertex ranking > 0. Use SetPVRankingCutOff() to turn off vertex ranking cut.  default is OFF
@@ -179,10 +187,10 @@ TStarJetPicoReader SetupReader ( TChain* chain, TString TriggerString, const dou
 
 	// Tracks cuts
 	TStarJetPicoTrackCuts* trackCuts = reader.GetTrackCuts();
-	trackCuts->SetDCACut( AjParameters::DcaCut ); /*19SEP var*/
-	trackCuts->SetMinNFitPointsCut( AjParameters::NMinFit ); /*19SEP var*/
-	trackCuts->SetFitOverMaxPointsCut( AjParameters::FitOverMaxPointsCut ); /*19SEP var*/
-	trackCuts->SetMaxPtCut ( AjParameters::MaxTrackPt ); /*19SEP var*/
+	trackCuts->SetDCACut( user.DcaCut ); /*19SEP var*/
+	trackCuts->SetMinNFitPointsCut( user.NMinFit ); /*19SEP var*/
+	trackCuts->SetFitOverMaxPointsCut( user.FitOverMaxPointsCut ); /*19SEP var*/
+	trackCuts->SetMaxPtCut ( user.MaxTrackPt ); /*19SEP var*/
 
 	std::cout << "Using these track cuts:" << std::endl;
 	std::cout << " dca : " << trackCuts->GetDCACut(  ) << std::endl; /*19SEP var*/
@@ -192,7 +200,7 @@ TStarJetPicoReader SetupReader ( TChain* chain, TString TriggerString, const dou
 
 	// Towers
 	TStarJetPicoTowerCuts* towerCuts = reader.GetTowerCuts();
-	towerCuts->SetMaxEtCut(AjParameters::MaxEtCut); /*19SEP var*/
+	towerCuts->SetMaxEtCut(user.MaxEtCut); /*19SEP var*/
 	towerCuts->AddBadTowers("./include/pp200Y12_badtower.list");		
     // #LY CHECK where is the bad tower list /*19SEP var*/
 
@@ -439,7 +447,7 @@ int main ( int argc, const char** argv ) {
 	cout << "SetupReader for pico" << endl; /*19SEP var*/
 
     // #ly note: Events & Tracks & Towers cuts are set here
-	TStarJetPicoReader reader = SetupReader( chain, user.TriggerName, user.RefMultCut );
+	TStarJetPicoReader reader = SetupReader( chain, user );  //user.TriggerName, user.RefMultCut );
     reader.SetTrackPileUpCut(user.TrackPileUpCut);
 	TStarJetPicoDefinitions::SetDebugLevel(user.TStarJet_DebugLevel);
 
